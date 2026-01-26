@@ -3,3 +3,4 @@ dist
 generated/prisma
 .env*
 pnpm-lock.yaml
+/generated/prisma
