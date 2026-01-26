@@ -1,0 +1,16 @@
+model Review {
+    id      String  @id @default(uuid())
+    rating  Int // 1–5
+    comment String?
+
+    userId String
+    user   User   @relation(fields: [userId], references: [id])
+
+    medicineId String
+    medicine   Medicine @relation(fields: [medicineId], references: [id])
+
+    createdAt DateTime @default(now())
+
+    // one review per user per medicine
+    @@unique([userId, medicineId])
+}
