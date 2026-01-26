@@ -23,8 +23,8 @@ app.get("/", (req: Request, res: Response) => {
 });
 
 //* Routes
-app.use("/api/auth", userRoutes);
 app.all("/api/auth/*splat", toNodeHandler(auth));
+app.use("/api/user", userRoutes);
 
 //* Error Handler
 app.use(globalErrorHandler);
