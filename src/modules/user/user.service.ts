@@ -1,7 +1,6 @@
 import { Request } from "express";
 import { prisma } from "../../lib/prisma";
-import { Role, UserStatus } from "../../../generated/prisma/enums";
-import { APIError } from "better-auth";
+import { OrderStatus, Role, UserStatus } from "../../../generated/prisma/enums";
 import { AppError } from "../../middleware/appError";
 import { User } from "../../../generated/prisma/client";
 
@@ -20,6 +19,108 @@ const getCurrentUser = async (req: Request) => {
 const getAllUsers = async () => {
     const result = await prisma.user.findMany();
     return result;
+};
+
+const adminStats = async () => {
+    const [
+        totalCount,
+        customerCount,
+        sellerCount,
+        adminCount,
+        totalOrders,
+        placedCount,
+        processingCount,
+        shippedCount,
+        deliveredCount,
+        cancelledCount,
+        totalCategories,
+        totalMedicines,
+        totalReviews,
+    ] = await prisma.$transaction([
+        prisma.user.count(),
+        prisma.user.count({ where: { role: Role.CUSTOMER } }),
+        prisma.user.count({ where: { role: Role.SELLER } }),
+        prisma.user.count({ where: { role: Role.ADMIN } }),
+        prisma.order.count(),
+        prisma.order.count({ where: { status: OrderStatus.PLACED } }),
+        prisma.order.count({ where: { status: OrderStatus.PROCESSING } }),
+        prisma.order.count({ where: { status: OrderStatus.SHIPPED } }),
+        prisma.order.count({ where: { status: OrderStatus.DELIVERED } }),
+        prisma.order.count({ where: { status: OrderStatus.CANCELLED } }),
+        prisma.category.count(),
+        prisma.medicine.count(),
+        prisma.review.count(),
+    ]);
+
+    return {
+        user: {
+            total: totalCount,
+            customer: customerCount,
+            seller: sellerCount,
+            admin: adminCount,
+        },
+        category: {
+            total: totalCategories,
+        },
+        medicine: {
+            total: totalMedicines,
+        },
+        order: {
+            total: totalOrders,
+            placed: placedCount,
+            processing: processingCount,
+            shipped: shippedCount,
+            delivered: deliveredCount,
+            cancelled: cancelledCount,
+        },
+        review: {
+            total: totalReviews,
+        },
+    };
+};
+
+const sellerStats = async () => {
+    const [
+        totalOrders,
+        placedCount,
+        processingCount,
+        shippedCount,
+        deliveredCount,
+        cancelledCount,
+        totalCategories,
+        totalMedicines,
+        totalReviews,
+    ] = await prisma.$transaction([
+        prisma.order.count(),
+        prisma.order.count({ where: { status: OrderStatus.PLACED } }),
+        prisma.order.count({ where: { status: OrderStatus.PROCESSING } }),
+        prisma.order.count({ where: { status: OrderStatus.SHIPPED } }),
+        prisma.order.count({ where: { status: OrderStatus.DELIVERED } }),
+        prisma.order.count({ where: { status: OrderStatus.CANCELLED } }),
+        prisma.category.count(),
+        prisma.medicine.count(),
+        prisma.review.count(),
+    ]);
+
+    return {
+        category: {
+            total: totalCategories,
+        },
+        medicine: {
+            total: totalMedicines,
+        },
+        order: {
+            total: totalOrders,
+            placed: placedCount,
+            processing: processingCount,
+            shipped: shippedCount,
+            delivered: deliveredCount,
+            cancelled: cancelledCount,
+        },
+        review: {
+            total: totalReviews,
+        },
+    };
 };
 
 const updateUser = async (
@@ -77,5 +178,7 @@ const updateUser = async (
 export const userService = {
     getCurrentUser,
     getAllUsers,
+    adminStats,
+    sellerStats,
     updateUser,
 };

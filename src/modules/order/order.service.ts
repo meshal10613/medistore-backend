@@ -1,4 +1,38 @@
+import { OrderStatus } from "../../../generated/prisma/client";
 import { prisma } from "../../lib/prisma";
+
+const getAllOrders = async (status?: string) => {
+    const whereClause = status ? { status: status as OrderStatus } : {};
+
+    const result = await prisma.order.findMany({
+        where: whereClause,
+        include: {
+            customer: true,
+            items: {
+                include: {
+                    medicine: true,
+                },
+            },
+        },
+        orderBy: { createdAt: "desc" },
+    });
+    return result;
+};
+
+const getOrderById = async (id: string) => {
+    const result = await prisma.order.findUnique({
+        where: { id },
+        include: {
+            customer: true,
+            items: {
+                include: {
+                    medicine: true,
+                },
+            },
+        },
+    });
+    return result;
+};
 
 const createOrder = async (orderData: any) => {
     const totalAmount = orderData.items.reduce(
@@ -33,5 +67,7 @@ const createOrder = async (orderData: any) => {
 };
 
 export const orderService = {
+    getAllOrders,
+    getOrderById,
     createOrder,
 };
