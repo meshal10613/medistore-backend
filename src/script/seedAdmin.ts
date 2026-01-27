@@ -1,17 +1,15 @@
+import { Role } from "../../generated/prisma/enums";
 import config from "../config";
-import { Role } from "../constants/enum";
 import { prisma } from "../lib/prisma";
 
-async function seedAdmin() {
+(async function seedAdmin() {
     try {
         console.log("***** Admin Seeding Started..... *****");
-        //! must put in env
         const adminData = {
-            name: "Syed Mohiuddin Meshal",
-            email: "syedmohiuddinmeshal@gmail.com",
-            password: "12345678",
+            name: "Admin",
+            email: config.admin.email!,
+            password: config.admin.password!,
             role: Role.ADMIN,
-            emailVerified: true,
         };
 
         console.log("***** Check Admin Exist or Not..... *****");
@@ -27,35 +25,33 @@ async function seedAdmin() {
 
         console.log("***** Create Admin..... *****");
         const signupAdmin = await fetch(
-            `http://localhost:5000/api/auth/sign-up/email`, //${config.better_auth.url}
+            `${config.better_auth.url}/api/auth/sign-up/email`,
             {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
+                    Origin: "http://localhost:3000",
                 },
                 body: JSON.stringify(adminData),
-				credentials: "include",
             },
         );
-		console.log(signupAdmin)
+
         if (signupAdmin.ok) {
             console.log("***** Admin Created..... *****");
-            // await prisma.user.update({
-            //     where: {
-            //         email: adminData.email,
-            //     },
-            //     data: {
-            //         emailVerified: true,
-            //     },
-            // });
+            await prisma.user.update({
+                where: {
+                    email: adminData.email,
+                },
+                data: {
+                    emailVerified: true,
+                },
+            });
 
-            // console.log("***** Email Verification Status Updated..... *****");
+            console.log("***** Email Verification Status Updated..... *****");
         }
 
         console.log("***** Admin Seeding Completed..... *****");
     } catch (error: any) {
         console.error("Error:", error);
     }
-}
-
-seedAdmin();
+})();
