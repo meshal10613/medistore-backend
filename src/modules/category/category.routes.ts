@@ -5,6 +5,8 @@ import { categoryController } from "./category.controller";
 
 const router = Router();
 
+router.get("/", categoryController.getAllCategories);
+
 router.post(
     "/",
     auth(Role.ADMIN, Role.SELLER),
