@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import { medicineService } from "./medicine.service";
+import paginationAndSorting from "../../helper/pagination_sorting.helper";
 
 const getAllMedicines = async (
     req: Request,
@@ -8,7 +9,17 @@ const getAllMedicines = async (
 ) => {
     try {
         const search = req.query.search as string | undefined;
-        const medicines = await medicineService.getAllMedicines({ search });
+        const { page, limit, skip, sortBy, sortOrder } = paginationAndSorting(
+            req.query,
+        );
+        const medicines = await medicineService.getAllMedicines({
+            search,
+            page,
+            limit,
+            skip,
+            sortBy,
+            sortOrder,
+        });
         res.status(200).json({
             success: true,
             message: "Medicines retrieved successfully",

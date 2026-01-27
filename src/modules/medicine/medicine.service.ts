@@ -3,7 +3,21 @@ import { MedicineWhereInput } from "../../../generated/prisma/models";
 import { prisma } from "../../lib/prisma";
 import { AppError } from "../../middleware/appError";
 
-const getAllMedicines = async ({ search }: { search: string | undefined }) => {
+const getAllMedicines = async ({
+    search,
+    page,
+    limit,
+    skip,
+    sortBy,
+    sortOrder,
+}: {
+    search: string | undefined;
+    page: number;
+    limit: number;
+    skip: number;
+    sortBy: string;
+    sortOrder: string;
+}) => {
     const andConditions: MedicineWhereInput[] = [];
     if (search) {
         andConditions.push({
@@ -32,10 +46,15 @@ const getAllMedicines = async ({ search }: { search: string | undefined }) => {
             ],
         });
     }
-    const medicines = await prisma.medicine.findMany({
-		where: {
-			AND: andConditions,
-		},
+    const result = await prisma.medicine.findMany({
+        take: limit,
+        skip: skip,
+        where: {
+            AND: andConditions,
+        },
+        orderBy: {
+            [sortBy]: sortOrder,
+        },
         include: {
             category: {
                 select: { id: true, name: true },
@@ -43,7 +62,21 @@ const getAllMedicines = async ({ search }: { search: string | undefined }) => {
             seller: true,
         },
     });
-    return medicines;
+
+    const total = await prisma.medicine.count({
+        where: {
+            AND: andConditions,
+        },
+    });
+    return {
+        data: result,
+        pagination: {
+            total,
+            page,
+            limit,
+            totalPages: Math.ceil(total / limit),
+        },
+    };
 };
 
 const createMedicine = async (payload: Medicine) => {
