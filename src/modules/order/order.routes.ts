@@ -14,4 +14,16 @@ router.post(
     orderController.createOrder,
 );
 
+router.delete(
+    "/:id",
+    auth(Role.ADMIN, Role.SELLER),
+    orderController.deleteOrderById,
+);
+
+router.patch(
+    "/:id",
+    auth(Role.ADMIN, Role.SELLER),
+    orderController.updateOrderById,
+);
+
 export const orderRoutes: Router = router;

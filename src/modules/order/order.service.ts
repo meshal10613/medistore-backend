@@ -1,5 +1,6 @@
-import { OrderStatus } from "../../../generated/prisma/client";
+import { Order, OrderStatus } from "../../../generated/prisma/client";
 import { prisma } from "../../lib/prisma";
+import { AppError } from "../../middleware/appError";
 
 const getAllOrders = async (status?: string) => {
     const whereClause = status ? { status: status as OrderStatus } : {};
@@ -66,8 +67,47 @@ const createOrder = async (orderData: any) => {
     return result;
 };
 
+const deleteOrderById = async (id: string) => {
+    const order = await prisma.order.findUnique({
+        where: { id },
+    });
+    if (!order) {
+        throw new AppError("Order not found", 404);
+    }
+
+    const result = await prisma.order.delete({
+        where: { id },
+    });
+    return result;
+};
+
+//! currently only status update is allowed
+const updateOrderById = async (id: string, orderData: Order) => {
+    const order = await prisma.order.findUnique({
+        where: { id },
+    });
+    if (!order) {
+        throw new AppError("Order not found", 404);
+    }
+    const status = orderData.status;
+    return await prisma.order.update({
+        where: { id },
+        data: { status },
+        include: {
+            customer: true,
+            items: {
+                include: {
+                    medicine: true,
+                },
+            },
+        },
+    });
+};
+
 export const orderService = {
     getAllOrders,
     getOrderById,
     createOrder,
+    deleteOrderById,
+    updateOrderById,
 };

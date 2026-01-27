@@ -54,4 +54,43 @@ const createOrder = async (req: Request, res: Response, next: NextFunction) => {
     }
 };
 
-export const orderController = { getAllOrders, getOrderById, createOrder };
+const deleteOrderById = async (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+) => {
+    try {
+        const { id } = req.params;
+        const result = await orderService.deleteOrderById(id as string);
+        res.status(200).json({
+            success: true,
+            message: "Order deleted successfully",
+            data: result,
+        });
+    } catch (error: any) {
+        next(error);
+    }
+};
+
+const updateOrderById = async(req: Request, res: Response, next: NextFunction) => {
+    try {
+        const { id } = req.params;
+        const orderData = req.body;
+        const result = await orderService.updateOrderById(id as string, orderData);
+        res.status(200).json({
+            success: true,
+            message: "Order updated successfully",
+            data: result,
+        });
+    } catch (error: any) {
+        next(error);
+    }
+}
+
+export const orderController = {
+    getAllOrders,
+    getOrderById,
+    createOrder,
+    deleteOrderById,
+    updateOrderById
+};
