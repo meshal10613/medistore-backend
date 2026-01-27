@@ -18,3 +18,5 @@ import { prisma } from "./lib/prisma";
 		process.exit(1);
     }
 })();
+
+//! need to add node-cron to delete orders which orderItem is empty

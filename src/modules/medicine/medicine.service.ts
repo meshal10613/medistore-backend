@@ -139,8 +139,47 @@ const createMedicine = async (payload: Medicine) => {
     return medicine;
 };
 
+const deleteMedicineById = async (id: string) => {
+    // 1️⃣ Validate medicine
+    const medicine = await prisma.medicine.findUnique({
+        where: { id },
+    });
+
+    if (!medicine) {
+        throw new AppError("Medicine not found", 404);
+    }
+
+    // 2️⃣ Delete medicine
+    await prisma.medicine.delete({
+        where: { id },
+    });
+};
+
+const updateMedicineId = async (medicineId: string, payload: Medicine) => {
+    const allowedFields = {
+        name: payload?.name,
+        description: payload?.description,
+        price: payload?.price,
+        stock: payload?.stock,
+        manufacturer: payload?.manufacturer,
+        imageUrl: payload?.imageUrl,
+    };
+
+    const dataToUpdate = Object.fromEntries(
+        Object.entries(allowedFields).filter(([_, v]) => v !== undefined),
+    );
+
+    const result = await prisma.medicine.update({
+        where: { id: medicineId },
+        data: dataToUpdate,
+    });
+    return result;
+};
+
 export const medicineService = {
     getAllMedicines,
     getMedicineById,
     createMedicine,
+    deleteMedicineById,
+    updateMedicineId,
 };

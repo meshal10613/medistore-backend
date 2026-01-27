@@ -10,4 +10,7 @@ router.get("/:id", medicineController.getMedicineById);
 
 router.post("/", auth(Role.SELLER), medicineController.createMedicine);
 
+router.delete("/:id", auth(Role.SELLER), medicineController.deleteMedicineById);
+router.patch("/:id", auth(Role.SELLER), medicineController.updateMedicineId);
+
 export const medicineRoutes: Router = router;

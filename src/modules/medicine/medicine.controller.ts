@@ -66,8 +66,42 @@ const createMedicine = async (
     }
 };
 
+const deleteMedicineById = async (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+) => {
+    try {
+        const { id } = req.params;
+        await medicineService.deleteMedicineById(id as string);
+        res.status(200).json({
+            success: true,
+            message: "Medicine deleted successfully",
+        });
+    } catch (error: any) {
+        next(error);
+    }
+};
+
+const updateMedicineId = async(req: Request, res: Response, next: NextFunction) => {
+    try {
+        const { id } = req.params;
+        const medicineData = req.body;
+        const result = await medicineService.updateMedicineId(id as string, medicineData);
+        res.status(200).json({
+            success: true,
+            message: "Medicine updated successfully",
+            data: result,
+        });
+    } catch (error: any) {
+        next(error);
+    }
+}
+
 export const medicineController = {
     getAllMedicines,
     getMedicineById,
     createMedicine,
+    deleteMedicineById,
+    updateMedicineId
 };

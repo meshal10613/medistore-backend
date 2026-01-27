@@ -9,7 +9,7 @@ enum OrderStatus {
 model Order {
     id         String @id @default(uuid())
     customerId String
-    customer   User   @relation("CustomerOrders", fields: [customerId], references: [id])
+    customer   User   @relation("CustomerOrders", fields: [customerId], references: [id], onDelete: Cascade)
 
     status          OrderStatus @default(PLACED)
     shippingAddress String
@@ -25,10 +25,10 @@ model OrderItem {
     id String @id @default(uuid())
 
     orderId String
-    order   Order  @relation(fields: [orderId], references: [id])
+    order   Order  @relation(fields: [orderId], references: [id], onDelete: Cascade)
 
     medicineId String
-    medicine   Medicine @relation(fields: [medicineId], references: [id])
+    medicine   Medicine @relation(fields: [medicineId], references: [id], onDelete: Cascade)
 
     quantity Int
     price    Float

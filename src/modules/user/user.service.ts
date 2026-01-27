@@ -27,12 +27,6 @@ const adminStats = async () => {
         customerCount,
         sellerCount,
         adminCount,
-        totalOrders,
-        placedCount,
-        processingCount,
-        shippedCount,
-        deliveredCount,
-        cancelledCount,
         totalCategories,
         totalMedicines,
         totalReviews,
@@ -41,16 +35,42 @@ const adminStats = async () => {
         prisma.user.count({ where: { role: Role.CUSTOMER } }),
         prisma.user.count({ where: { role: Role.SELLER } }),
         prisma.user.count({ where: { role: Role.ADMIN } }),
-        prisma.order.count(),
-        prisma.order.count({ where: { status: OrderStatus.PLACED } }),
-        prisma.order.count({ where: { status: OrderStatus.PROCESSING } }),
-        prisma.order.count({ where: { status: OrderStatus.SHIPPED } }),
-        prisma.order.count({ where: { status: OrderStatus.DELIVERED } }),
-        prisma.order.count({ where: { status: OrderStatus.CANCELLED } }),
         prisma.category.count(),
         prisma.medicine.count(),
         prisma.review.count(),
     ]);
+
+    // Orders: group by status + sum totalAmount
+    const orderStats = await prisma.order.groupBy({
+        by: ["status"],
+        _count: { status: true },
+        _sum: { totalAmount: true },
+    });
+
+    const orderData: any = {
+        total: 0,
+        placed: 0,
+        processing: 0,
+        shipped: 0,
+        delivered: 0,
+        cancelled: 0,
+        placedAmount: 0,
+        processingAmount: 0,
+        shippedAmount: 0,
+        deliveredAmount: 0,
+        cancelledAmount: 0,
+    };
+
+    let totalOrders = 0;
+
+    for (const s of orderStats) {
+        const status = s.status.toLowerCase();
+        orderData[status] = s._count.status;
+        orderData[`${status}Amount`] = s._sum.totalAmount || 0;
+        totalOrders += s._count.status;
+    }
+
+    orderData.total = totalOrders;
 
     return {
         user: {
@@ -65,14 +85,7 @@ const adminStats = async () => {
         medicine: {
             total: totalMedicines,
         },
-        order: {
-            total: totalOrders,
-            placed: placedCount,
-            processing: processingCount,
-            shipped: shippedCount,
-            delivered: deliveredCount,
-            cancelled: cancelledCount,
-        },
+        order: orderData,
         review: {
             total: totalReviews,
         },
@@ -81,26 +94,46 @@ const adminStats = async () => {
 
 const sellerStats = async () => {
     const [
-        totalOrders,
-        placedCount,
-        processingCount,
-        shippedCount,
-        deliveredCount,
-        cancelledCount,
         totalCategories,
         totalMedicines,
         totalReviews,
     ] = await prisma.$transaction([
-        prisma.order.count(),
-        prisma.order.count({ where: { status: OrderStatus.PLACED } }),
-        prisma.order.count({ where: { status: OrderStatus.PROCESSING } }),
-        prisma.order.count({ where: { status: OrderStatus.SHIPPED } }),
-        prisma.order.count({ where: { status: OrderStatus.DELIVERED } }),
-        prisma.order.count({ where: { status: OrderStatus.CANCELLED } }),
         prisma.category.count(),
         prisma.medicine.count(),
         prisma.review.count(),
     ]);
+
+    //  Orders: group by status + sum totalAmount
+    const orderStats = await prisma.order.groupBy({
+        by: ["status"],
+        _count: { status: true },
+        _sum: { totalAmount: true },
+    });
+
+    const orderData: any = {
+        total: 0,
+        placed: 0,
+        processing: 0,
+        shipped: 0,
+        delivered: 0,
+        cancelled: 0,
+        placedAmount: 0,
+        processingAmount: 0,
+        shippedAmount: 0,
+        deliveredAmount: 0,
+        cancelledAmount: 0,
+    };
+
+    let totalOrders = 0;
+
+    for (const s of orderStats) {
+        const status = s.status.toLowerCase();
+        orderData[status] = s._count.status;
+        orderData[`${status}Amount`] = s._sum.totalAmount || 0;
+        totalOrders += s._count.status;
+    }
+
+    orderData.total = totalOrders;
 
     return {
         category: {
@@ -109,14 +142,7 @@ const sellerStats = async () => {
         medicine: {
             total: totalMedicines,
         },
-        order: {
-            total: totalOrders,
-            placed: placedCount,
-            processing: processingCount,
-            shipped: shippedCount,
-            delivered: deliveredCount,
-            cancelled: cancelledCount,
-        },
+        order: orderData,
         review: {
             total: totalReviews,
         },

@@ -4,10 +4,10 @@ model Review {
     comment String?
 
     userId String
-    user   User   @relation(fields: [userId], references: [id])
+    user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
     medicineId String
-    medicine   Medicine @relation(fields: [medicineId], references: [id])
+    medicine   Medicine @relation(fields: [medicineId], references: [id], onDelete: Cascade)
 
     createdAt DateTime @default(now())
 
