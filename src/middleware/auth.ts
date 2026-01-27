@@ -30,7 +30,7 @@ const auth = (...roles: Role[]) => {
                 role: session.user.role as string,
                 emailVerified: session.user.emailVerified,
             };
-
+            
             if (roles.length && !roles.includes(req.user.role as Role)) {
                 return res
                     .status(403)

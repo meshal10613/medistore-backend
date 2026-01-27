@@ -30,6 +30,24 @@ const getAllMedicines = async (
     }
 };
 
+const getMedicineById = async (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+) => {
+    const { id } = req.params;
+    const result = await medicineService.getMedicineById(id as string);
+    res.status(200).json({
+        success: true,
+        message: "Medicine retrieved successfully",
+        data: result,
+    });
+    try {
+    } catch (error: any) {
+        next(error);
+    }
+};
+
 const createMedicine = async (
     req: Request,
     res: Response,
@@ -50,5 +68,6 @@ const createMedicine = async (
 
 export const medicineController = {
     getAllMedicines,
+    getMedicineById,
     createMedicine,
 };

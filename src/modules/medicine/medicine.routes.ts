@@ -6,6 +6,7 @@ import { medicineController } from "./medicine.controller";
 const router = Router();
 
 router.get("/", medicineController.getAllMedicines);
+router.get("/:id", medicineController.getMedicineById);
 
 router.post("/", auth(Role.SELLER), medicineController.createMedicine);
 

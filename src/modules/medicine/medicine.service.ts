@@ -79,6 +79,19 @@ const getAllMedicines = async ({
     };
 };
 
+const getMedicineById = async (id: string) => {
+    const medicine = await prisma.medicine.findUnique({
+        where: { id },
+        include: {
+            category: {
+                select: { id: true, name: true },
+            },
+            seller: true,
+        },
+    });
+    return medicine;
+};
+
 const createMedicine = async (payload: Medicine) => {
     const {
         name,
@@ -128,5 +141,6 @@ const createMedicine = async (payload: Medicine) => {
 
 export const medicineService = {
     getAllMedicines,
+    getMedicineById,
     createMedicine,
 };

@@ -10,9 +10,12 @@ router.get(
     auth(Role.CUSTOMER, Role.SELLER, Role.ADMIN),
     userController.getCurrentUser,
 );
-router.get("/", auth(Role.ADMIN), userController.getAllUsers);
+router.get(
+    "/",
+    auth(Role.ADMIN),
+    userController.getAllUsers,
+);
 
-
-router.patch("/:id", auth(Role.ADMIN), userController.updateUserStatus);
+router.patch("/:id", auth(Role.ADMIN, Role.SELLER, Role.CUSTOMER), userController.updateUser);
 
 export const userRoutes: Router = router;

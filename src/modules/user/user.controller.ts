@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import { userService } from "./user.service";
+import { User } from "../../../generated/prisma/client";
 
 const getCurrentUser = async (
     req: Request,
@@ -31,20 +32,22 @@ const getAllUsers = async (req: Request, res: Response, next: NextFunction) => {
     }
 };
 
-const updateUserStatus = async (
-    req: Request,
-    res: Response,
-    next: NextFunction,
-) => {
+const updateUser = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const { id } = req.params;
-        const { role } = req.body;
-        await userService.updateUserStatus(id as string, role);
+        const user = req.user;
+
+        await userService.updateUser(
+            user as User, // actor
+            id as string, // target user id
+            req.body, // update payload
+        );
+
         res.status(200).json({
             success: true,
-            message: "User status updated successfully!",
+            message: "User updated successfully!",
         });
-    } catch (error: any) {
+    } catch (error) {
         next(error);
     }
 };
@@ -52,5 +55,5 @@ const updateUserStatus = async (
 export const userController = {
     getCurrentUser,
     getAllUsers,
-	updateUserStatus
+    updateUser,
 };
