@@ -36,7 +36,6 @@ const auth = (...roles: Role[]) => {
                     .status(403)
                     .json({ success: false, message: "Forbidden Access!" });
             }
-
             next();
         } catch (error: any) {
             next(error);

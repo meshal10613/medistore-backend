@@ -22,11 +22,12 @@ export const auth = betterAuth({
                 defaultValue: Status.ACTIVE,
                 required: true,
                 allowedValues: [Status.ACTIVE, Status.BANNED],
-            },
+            }
         },
     },
     emailAndPassword: {
         enabled: true,
+        requireVerifiedEmail: false,
     },
     socialProviders: {
         google: {

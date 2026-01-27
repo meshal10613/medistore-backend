@@ -5,6 +5,10 @@ import { auth } from "./lib/auth";
 import globalErrorHandler from "./middleware/globalErrorHandler";
 import config from "./config";
 import { userRoutes } from "./modules/user/user.routes";
+import { categoryRoutes } from "./modules/category/category.routes";
+import { medicineRoutes } from "./modules/medicine/medicine.routes";
+import { orderRoutes } from "./modules/order/order.routes";
+import { reviewRoutes } from "./modules/review/review.routes";
 
 const app: Application = express();
 
@@ -25,6 +29,10 @@ app.get("/", (req: Request, res: Response) => {
 //* Routes
 app.all("/api/auth/*splat", toNodeHandler(auth));
 app.use("/api/user", userRoutes);
+app.use("/api/category", categoryRoutes);
+app.use("/api/medicine", medicineRoutes);
+app.use("/api/order", orderRoutes);
+app.use("/api/review", reviewRoutes);
 
 //* Error Handler
 app.use(globalErrorHandler);
