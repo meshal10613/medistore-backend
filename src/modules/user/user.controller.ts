@@ -58,6 +58,20 @@ const sellerStats = async (req: Request, res: Response, next: NextFunction) => {
     }
 };
 
+const customerStats = async(req: Request, res: Response, next: NextFunction) => {
+    try {
+        const user = req.user;
+        const result = await userService.customerStats(user as Partial<User>);
+        res.status(200).json({
+            success: true,
+            message: "Customer stats fetched successfully!",
+            data: result,
+        });
+    } catch (error: any) {
+        next(error);
+    }
+}
+
 const updateUser = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const { id } = req.params;
@@ -83,5 +97,6 @@ export const userController = {
     getAllUsers,
     adminStats,
     sellerStats,
+    customerStats,
     updateUser,
 };

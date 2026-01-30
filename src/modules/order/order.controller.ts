@@ -72,11 +72,18 @@ const deleteOrderById = async (
     }
 };
 
-const updateOrderById = async(req: Request, res: Response, next: NextFunction) => {
+const updateOrderById = async (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+) => {
     try {
         const { id } = req.params;
         const orderData = req.body;
-        const result = await orderService.updateOrderById(id as string, orderData);
+        const result = await orderService.updateOrderById(
+            id as string,
+            orderData,
+        );
         res.status(200).json({
             success: true,
             message: "Order updated successfully",
@@ -85,12 +92,12 @@ const updateOrderById = async(req: Request, res: Response, next: NextFunction) =
     } catch (error: any) {
         next(error);
     }
-}
+};
 
 export const orderController = {
     getAllOrders,
     getOrderById,
     createOrder,
     deleteOrderById,
-    updateOrderById
+    updateOrderById,
 };

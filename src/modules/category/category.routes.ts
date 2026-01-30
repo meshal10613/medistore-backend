@@ -15,4 +15,6 @@ router.post(
 
 router.delete("/:id", auth(Role.ADMIN, Role.SELLER), categoryController.deleteCategoryById);
 
+router.patch("/:id", auth(Role.ADMIN, Role.SELLER), categoryController.updateCategoryById);
+
 export const categoryRoutes: Router = router;

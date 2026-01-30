@@ -5,7 +5,7 @@ model Medicine {
     price        Float
     stock        Int
     manufacturer String
-    imageUrl     String?
+    imageUrl     String
 
     // Relations
     categoryId String

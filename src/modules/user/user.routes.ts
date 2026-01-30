@@ -17,6 +17,7 @@ router.get(
 );
 router.get("/admin/stats", auth(Role.ADMIN), userController.adminStats);
 router.get("/seller/stats", auth(Role.SELLER), userController.sellerStats);
+router.get("/customer/stats", auth(Role.CUSTOMER), userController.customerStats);
 
 router.patch("/:id", auth(Role.ADMIN, Role.SELLER, Role.CUSTOMER), userController.updateUser);
 

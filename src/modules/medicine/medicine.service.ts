@@ -60,6 +60,12 @@ const getAllMedicines = async ({
                 select: { id: true, name: true },
             },
             seller: true,
+            reviews: {
+                select: {
+                    rating: true,
+                    comment: true,
+                }
+            }
         },
     });
 
@@ -87,6 +93,9 @@ const getMedicineById = async (id: string) => {
                 select: { id: true, name: true },
             },
             seller: true,
+            reviews: {
+                include: { user: true },
+            },
         },
     });
     return medicine;

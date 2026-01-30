@@ -21,8 +21,8 @@ const getAllOrders = async (status?: string) => {
 };
 
 const getOrderById = async (id: string) => {
-    const result = await prisma.order.findUnique({
-        where: { id },
+    const result = await prisma.order.findMany({
+        where: { customerId: id },
         include: {
             customer: true,
             items: {

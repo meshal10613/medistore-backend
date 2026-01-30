@@ -1,6 +1,5 @@
 import { NextFunction, Request, Response } from "express";
 import { reviewService } from "./review.service";
-import { success } from "better-auth";
 
 const getAllReviews = async (
     req: Request,

@@ -6,7 +6,11 @@ import { Role } from "../../../generated/prisma/enums";
 const router = Router();
 
 router.get("/", auth(Role.SELLER, Role.ADMIN), orderController.getAllOrders);
-router.get("/:id", auth(Role.SELLER, Role.ADMIN), orderController.getOrderById);
+router.get(
+    "/:id",
+    auth(Role.CUSTOMER, Role.SELLER, Role.ADMIN),
+    orderController.getOrderById,
+);
 
 router.post(
     "/",
