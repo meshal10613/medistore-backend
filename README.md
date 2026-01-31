@@ -50,12 +50,13 @@
 
 ## 👤 User Routes
 
-| Method | Endpoint                 | Access                    | Description                |
-| ------ | ------------------------ | ------------------------- | -------------------------- |
-| GET    | `/api/user`              | Admin                     | Get all users              |
-| GET    | `/api/user/admin/stats`  | Admin                     | Get admin dashboard stats  |
-| GET    | `/api/user/seller/stats` | Seller                    | Get seller dashboard stats |
-| PATCH  | `/api/user/:id`          | Admin / Seller / Customer | Update user profile        |
+| Method | Endpoint                   | Access                    | Description                  |
+| ------ | -------------------------- | ------------------------- | ---------------------------- |
+| GET    | `/api/user`                | Admin                     | Get all users                |
+| GET    | `/api/user/admin/stats`    | Admin                     | Get admin dashboard stats    |
+| GET    | `/api/user/seller/stats`   | Seller                    | Get seller dashboard stats   |
+| GET    | `/api/user/customer/stats` | Customer                  | Get customer dashboard stats |
+| PATCH  | `/api/user/:id`            | Admin / Seller / Customer | Update user profile          |
 
 ### 🔎 Update Rules
 
